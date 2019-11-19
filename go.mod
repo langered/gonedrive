@@ -3,12 +3,13 @@ module github.com/langered/gonedrive
 go 1.12
 
 require (
-	github.com/google/pprof v0.0.0-20191105193234-27840fff0d09 // indirect
-	github.com/ianlancetaylor/demangle v0.0.0-20181102032728-5e5cf60278f6 // indirect
+	github.com/golang/protobuf v1.3.2 // indirect
+	github.com/kr/pretty v0.1.0 // indirect
 	github.com/onsi/ginkgo v1.10.3
 	github.com/onsi/gomega v1.7.1
-	github.com/s4heid/goom v0.0.1
 	github.com/spf13/cobra v0.0.5
-	golang.org/x/arch v0.0.0-20191101135251-a0d8588395bd // indirect
-	golang.org/x/tools v0.0.0-20191105231337-689d0f08e67a // indirect
+	golang.org/x/net v0.0.0-20190827160401-ba9fcec4b297 // indirect
+	golang.org/x/sys v0.0.0-20190904154756-749cb33beabd // indirect
+	golang.org/x/text v0.3.2 // indirect
+	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
 )

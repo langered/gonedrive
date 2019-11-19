@@ -1,12 +1,15 @@
 package service
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
-func Login() string {
+func AuthURL() string {
 	authorizeURI := "https://login.microsoftonline.com/common/oauth2/v2.0/authorize"
 	clientID := "94126bd2-3582-4928-adb7-bf307c7d5135"
-	scope := "onedrive.readwrite"
-	responseType := "code"
+	scope := "files.readwrite"
+	responseType := "token"
 	redirectURI := "https%3A%2F%2Flangered.github.io%2Fgonedrive%2Fdoc%2Foauthcallbackhandler.html"
 
 	return fmt.Sprintf("%s?client_id=%s&scope=%s&response_type=%s&redirect_uri=%s",
@@ -15,4 +18,11 @@ func Login() string {
 		scope,
 		responseType,
 		redirectURI)
+}
+
+func ValidateToken(token string) error {
+	if len(token) < 1 {
+		return errors.New("")
+	}
+	return nil
 }

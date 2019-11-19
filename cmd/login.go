@@ -5,6 +5,7 @@ import (
 
 	"github.com/langered/gonedrive/service"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 func NewLoginCmd() *cobra.Command {
@@ -12,20 +13,40 @@ func NewLoginCmd() *cobra.Command {
 		Use:   "login",
 		Short: "Login to OneDrive",
 		Run: func(cmd *cobra.Command, args []string) {
-
-			fmt.Println("Login to:\n\n\n", service.AuthURL(), "\n\n")
-			fmt.Print("Enter the token: ")
-			var input string
-			fmt.Scanln(&input)
-
-			accessToken := input
-			err := service.ValidateToken(accessToken)
-			if err != nil {
-				fmt.Println("Invalid token")
-				fmt.Println(err)
+			accessToken := enterAccessToken()
+			valid := validateEnteredToken(accessToken)
+			if !valid {
+				return
 			}
-
-			fmt.Println(accessToken)
+			writeAccessTokenToConfig(accessToken)
 		},
 	}
+}
+
+func enterAccessToken() string {
+	var input string
+	fmt.Println("Login to:\n\n\n", service.AuthURL(), "\n\n")
+	fmt.Print("Enter the token: ")
+	fmt.Scanln(&input)
+	return input
+}
+
+func validateEnteredToken(token string) bool {
+	err := service.ValidateToken(token)
+	if err != nil {
+		fmt.Println("Invalid token")
+		fmt.Println(err)
+		return false
+	}
+	return true
+}
+
+func writeAccessTokenToConfig(accessToken string) {
+	viper.Set("access_token", accessToken)
+	err := viper.WriteConfig()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println("Access token stored in config file")
 }

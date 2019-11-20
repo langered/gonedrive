@@ -25,6 +25,7 @@ func init() {
 	rootCmd.AddCommand(
 		NewVersionCmd(),
 		NewLoginCmd(),
+		NewListCmd(),
 	)
 }
 

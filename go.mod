@@ -3,6 +3,7 @@ module github.com/langered/gonedrive
 go 1.12
 
 require (
+	github.com/golang/mock v1.3.1
 	github.com/golang/protobuf v1.3.2 // indirect
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/mitchellh/go-homedir v1.1.0

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 
 	"github.com/langered/gonedrive/httpclient"
 )
@@ -15,17 +16,29 @@ type ListResponse struct {
 
 type Item struct {
 	Name string `json:name`
+	ID   string `json:id`
 }
 
+var (
+	listRootURL string = "https://graph.microsoft.com/v1.0/me/drive/root/children"
+	listURL     string = "https://graph.microsoft.com/v1.0/me/drive/items/%s/children"
+)
+
 func ListItems(httpClient httpclient.HttpClient, path string, accessToken string) ([]string, error) {
-	request := getRequest("https://graph.microsoft.com/v1.0/me/drive/root/children", accessToken)
-	response, err := httpClient.Do(request)
+	pathItems := strings.Split(path, "/")
+	listResponse, err := listItemsAsStruct(httpClient, listRootURL, accessToken)
 	if err != nil {
 		return []string{}, err
 	}
-	listResponse, err := unmarshalResponse(response)
-	if err != nil {
-		return []string{}, err
+	for _, pathItem := range pathItems {
+		if pathItem != "" {
+			id := getIDByName(listResponse, pathItem)
+			nextURL := fmt.Sprintf(listURL, id)
+			listResponse, err = listItemsAsStruct(httpClient, nextURL, accessToken)
+			if err != nil {
+				return []string{}, err
+			}
+		}
 	}
 
 	items := []string{}
@@ -33,6 +46,24 @@ func ListItems(httpClient httpclient.HttpClient, path string, accessToken string
 		items = append(items, item.Name)
 	}
 	return items, nil
+}
+
+func getIDByName(response ListResponse, name string) string {
+	for _, item := range response.Value {
+		if item.Name == name {
+			return item.ID
+		}
+	}
+	return ""
+}
+
+func listItemsAsStruct(httpClient httpclient.HttpClient, url string, accessToken string) (ListResponse, error) {
+	request := getRequest(url, accessToken)
+	response, err := httpClient.Do(request)
+	if err != nil {
+		return ListResponse{}, err
+	}
+	return unmarshalResponse(response)
 }
 
 func getRequest(url string, accessToken string) *http.Request {
@@ -49,7 +80,6 @@ func unmarshalResponse(response *http.Response) (ListResponse, error) {
 
 	err := json.Unmarshal(body, &listResponse)
 	if err != nil {
-		fmt.Println(err)
 		return ListResponse{}, err
 	}
 	return listResponse, nil

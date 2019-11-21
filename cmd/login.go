@@ -25,8 +25,8 @@ func NewLoginCmd() *cobra.Command {
 
 func enterAccessToken() string {
 	var input string
-	fmt.Println("Login to:\n\n\n", service.AuthURL(), "\n\n")
-	fmt.Print("Enter the token: ")
+	fmt.Println("Login to:\n\n\n", service.AuthURL())
+	fmt.Print("\n\nEnter the token: ")
 	fmt.Scanln(&input)
 	return input
 }

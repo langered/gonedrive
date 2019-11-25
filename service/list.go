@@ -2,6 +2,7 @@ package service
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -32,7 +33,11 @@ func ListItems(httpClient httpclient.HttpClient, path string, accessToken string
 	}
 	for _, pathItem := range pathItems {
 		if pathItem != "" {
-			id := getIDByName(listResponse, pathItem)
+			id, err := getIDByName(listResponse, pathItem)
+			if err != nil {
+				return []string{}, err
+			}
+
 			nextURL := fmt.Sprintf(listURL, id)
 			listResponse, err = listItemsAsStruct(httpClient, nextURL, accessToken)
 			if err != nil {
@@ -48,13 +53,13 @@ func ListItems(httpClient httpclient.HttpClient, path string, accessToken string
 	return items, nil
 }
 
-func getIDByName(response ListResponse, name string) string {
+func getIDByName(response ListResponse, name string) (string, error) {
 	for _, item := range response.Value {
 		if item.Name == name {
-			return item.ID
+			return item.ID, nil
 		}
 	}
-	return ""
+	return "", errors.New(fmt.Sprintf("Item with the name: %v not found.", name))
 }
 
 func listItemsAsStruct(httpClient httpclient.HttpClient, url string, accessToken string) (ListResponse, error) {

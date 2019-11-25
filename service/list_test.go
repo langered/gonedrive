@@ -101,6 +101,21 @@ var _ = Describe("File-Service", func() {
 					Expect(items).To(Equal([]string{}))
 				})
 			})
+
+			Context("The given path contains a element which does not exist", func() {
+				BeforeEach(func() {
+					mockHttpClient = NewMockHttpClient(mockCtrl)
+
+					prepareHttpClient(listRootURL, respBodyStringRoot, 200, nil)
+				})
+
+				It("returns an empty list and the error", func() {
+					items, err := service.ListItems(mockHttpClient, "/folder2/folder1_2", "abc123")
+
+					Expect(err).To(HaveOccurred())
+					Expect(items).To(Equal([]string{}))
+				})
+			})
 		})
 
 		Context("http client returns an error", func() {

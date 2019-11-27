@@ -5,6 +5,7 @@ import (
 	"fmt"
 )
 
+//AuthURL returns the URL for the authentication in microsoft graph
 func AuthURL() string {
 	authorizeURI := "https://login.microsoftonline.com/common/oauth2/v2.0/authorize"
 	clientID := "94126bd2-3582-4928-adb7-bf307c7d5135"
@@ -20,6 +21,7 @@ func AuthURL() string {
 		redirectURI)
 }
 
+//ValidateToken is a function to check if the given token is correct
 func ValidateToken(token string) error {
 	if len(token) < 1 {
 		return errors.New("")

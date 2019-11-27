@@ -9,6 +9,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+//NewGetCmd returns the get cobra command
 func NewGetCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "get [path]",

@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+//NewLoginCmd returns the login cobra command
 func NewLoginCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "login",

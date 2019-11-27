@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	listRootURL    string
+	listRootURL string
 )
 
 var _ = Describe("File-Service", func() {

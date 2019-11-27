@@ -52,6 +52,7 @@ func initConfig() {
 	}
 }
 
+//Execute the root cmd of gonedrive
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)

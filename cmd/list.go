@@ -9,6 +9,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+//NewListCmd returns the list cobra command
 func NewListCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "list [path]",

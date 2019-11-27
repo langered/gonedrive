@@ -11,6 +11,7 @@ var (
 	contentOfFileURL string = "https://graph.microsoft.com/v1.0/me/drive/root:/%s:/content"
 )
 
+//Get returns the content of a file given by a path
 func Get(httpClient httpclient.HttpClient, accessToken string, remotePath string) (string, error) {
 	url := fmt.Sprintf(contentOfFileURL, remotePath)
 	request := getRequest(url, accessToken)

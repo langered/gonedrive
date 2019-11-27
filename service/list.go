@@ -2,7 +2,6 @@ package service
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -11,11 +10,11 @@ import (
 	"github.com/langered/gonedrive/httpclient"
 )
 
-type ListResponse struct {
-	Value []Item `json:"value"`
+type listResponse struct {
+	Value []item `json:"value"`
 }
 
-type Item struct {
+type item struct {
 	Name string `json:"name"`
 	ID   string `json:"id"`
 }
@@ -25,6 +24,7 @@ var (
 	listURL     string = "https://graph.microsoft.com/v1.0/me/drive/items/%s/children"
 )
 
+//ListItems returns the folders and files in a given path as []string
 func ListItems(httpClient httpclient.HttpClient, path string, accessToken string) ([]string, error) {
 	pathItems := strings.Split(path, "/")
 	listResponse, err := listItemsAsStruct(httpClient, listRootURL, accessToken)
@@ -53,20 +53,20 @@ func ListItems(httpClient httpclient.HttpClient, path string, accessToken string
 	return items, nil
 }
 
-func getIDByName(response ListResponse, name string) (string, error) {
+func getIDByName(response listResponse, name string) (string, error) {
 	for _, item := range response.Value {
 		if item.Name == name {
 			return item.ID, nil
 		}
 	}
-	return "", errors.New(fmt.Sprintf("Item with the name: %v not found.", name))
+	return "", fmt.Errorf("Item with the name: %v not found.", name)
 }
 
-func listItemsAsStruct(httpClient httpclient.HttpClient, url string, accessToken string) (ListResponse, error) {
+func listItemsAsStruct(httpClient httpclient.HttpClient, url string, accessToken string) (listResponse, error) {
 	request := getRequest(url, accessToken)
 	response, err := httpClient.Do(request)
 	if err != nil {
-		return ListResponse{}, err
+		return listResponse{}, err
 	}
 	return unmarshalResponse(response)
 }
@@ -78,14 +78,14 @@ func getRequest(url string, accessToken string) *http.Request {
 	return req
 }
 
-func unmarshalResponse(response *http.Response) (ListResponse, error) {
+func unmarshalResponse(response *http.Response) (listResponse, error) {
 	defer response.Body.Close()
 	body, _ := ioutil.ReadAll(response.Body)
-	var listResponse ListResponse
+	var unmarshalledResponse listResponse
 
-	err := json.Unmarshal(body, &listResponse)
+	err := json.Unmarshal(body, &unmarshalledResponse)
 	if err != nil {
-		return ListResponse{}, err
+		return listResponse{}, err
 	}
-	return listResponse, nil
+	return unmarshalledResponse, nil
 }

@@ -26,6 +26,7 @@ func init() {
 		NewVersionCmd(),
 		NewLoginCmd(),
 		NewListCmd(),
+		NewGetCmd(),
 	)
 }
 

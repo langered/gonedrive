@@ -3,7 +3,6 @@ package service
 import (
 	"errors"
 	"fmt"
-	"os"
 )
 
 func AuthURL() string {
@@ -25,14 +24,5 @@ func ValidateToken(token string) error {
 	if len(token) < 1 {
 		return errors.New("")
 	}
-	return nil
-}
-
-func SaveToken(path string, token string) error {
-	_, err := os.Create(path)
-	if err != nil {
-		return err
-	}
-	// defer file.Close()
 	return nil
 }

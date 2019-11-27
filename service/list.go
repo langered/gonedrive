@@ -12,12 +12,12 @@ import (
 )
 
 type ListResponse struct {
-	Value []Item `json:value`
+	Value []Item `json:"value"`
 }
 
 type Item struct {
-	Name string `json:name`
-	ID   string `json:id`
+	Name string `json:"name"`
+	ID   string `json:"id"`
 }
 
 var (

@@ -21,7 +21,7 @@ func NewListCmd() *cobra.Command {
 			if len(args) == 1 {
 				path = args[0]
 			}
-			items, err := service.ListItems(http.DefaultClient, path, viper.Get("access_token").(string))
+			items, err := service.ListItems(http.DefaultClient, viper.Get("access_token").(string), path)
 			if err != nil {
 				fmt.Println(err)
 				return

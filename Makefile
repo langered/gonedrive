@@ -19,5 +19,9 @@ test:
 vet:
 	go vet ./...
 
+.PHONY: goreport
+goreport:
+	goreportcard-cli -v
+
 .PHONY: all
-all: install vet build test
+all: install vet goreport build test

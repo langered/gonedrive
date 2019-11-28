@@ -27,6 +27,7 @@ func init() {
 		NewLoginCmd(),
 		NewListCmd(),
 		NewGetCmd(),
+		NewUploadCmd(),
 	)
 }
 

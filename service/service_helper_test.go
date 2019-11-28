@@ -29,3 +29,19 @@ func prepareHttpClient(expectedURL string, respBodyString string, statusCode int
 			Body:       respBody,
 		}, err)
 }
+
+func expectPUTRequest(expectedURL string, respBodyString string, data string, statusCode int, err error) {
+	respBody := ioutil.NopCloser(strings.NewReader(respBodyString))
+
+	req, _ := http.NewRequest("PUT", expectedURL, ioutil.NopCloser(strings.NewReader(data)))
+	bearerToken := "Bearer abc123"
+	req.Header.Add("Authorization", bearerToken)
+
+	mockHttpClient.
+		EXPECT().
+		Do(req).
+		Return(&http.Response{
+			StatusCode: statusCode,
+			Body:       respBody,
+		}, err)
+}

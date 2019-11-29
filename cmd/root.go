@@ -20,7 +20,7 @@ var (
 
 func init() {
 	cobra.OnInitialize(initConfig)
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.cobra.yaml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.gonedrive.yaml)")
 
 	rootCmd.AddCommand(
 		NewVersionCmd(),
@@ -36,13 +36,18 @@ func initConfig() {
 		viper.SetConfigFile(cfgFile)
 	} else {
 		home, err := homedir.Dir()
-
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		workingDir, err := os.Getwd()
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
 
 		viper.AddConfigPath(home)
+		viper.AddConfigPath(workingDir)
 		viper.SetConfigName(".gonedrive")
 	}
 

@@ -3,7 +3,7 @@ name: Build & Test gonedrive
 on: [push, pull_request]
 
 jobs:
-  
+
   test:
     name: Test Go ${{ matrix.go }} on ${{ matrix.platform }}
     runs-on: ${{ matrix.platform }}
@@ -12,7 +12,7 @@ jobs:
       matrix:
         go: [ '1.13', '1.12' ]
         platform: [ubuntu-latest, macOS-latest, windows-latest]
-    
+
     steps:
 
     - name: Set up Go 1.13
@@ -29,10 +29,9 @@ jobs:
 
     - name: Build
       run: make build
-    
+
     - name: Vet the code
       run: make vet
-    
+
     - name: Run unit tests
       run: make test
-    

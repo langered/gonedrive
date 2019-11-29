@@ -10,6 +10,10 @@ install:
 build:
 	go build .
 
+.PHONY: docker-build
+docker-build:
+	docker build -t gonedrive .
+
 .PHONY: test
 test:
 	go test -v -coverprofile=coverage.out ./service

@@ -33,21 +33,6 @@ func (m *MockHttpClient) EXPECT() *MockHttpClientMockRecorder {
 	return m.recorder
 }
 
-// Get mocks base method
-func (m *MockHttpClient) Get(url string) (*http.Response, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Get", url)
-	ret0, _ := ret[0].(*http.Response)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// Get indicates an expected call of Get
-func (mr *MockHttpClientMockRecorder) Get(url interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockHttpClient)(nil).Get), url)
-}
-
 // Do mocks base method
 func (m *MockHttpClient) Do(request *http.Request) (*http.Response, error) {
 	m.ctrl.T.Helper()

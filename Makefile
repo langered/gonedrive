@@ -16,7 +16,7 @@ docker-build:
 
 .PHONY: test
 test:
-	go test -v -race -covermode atomic -coverprofile=profile.cov ./...
+	go test -v -race -covermode atomic -coverprofile=profile.cov ./service
 	go tool cover -func=profile.cov
 
 .PHONY: vet

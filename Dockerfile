@@ -1,12 +1,13 @@
 FROM golang:latest as build
 
-WORKDIR /go/src/app
-ADD . /go/src/app
+WORKDIR /go/src/gonedrive
+ADD . /go/src/gonedrive
 
 RUN go get -d -v ./...
 
-RUN go build -o /go/bin/app
+RUN go test -v ./service
+RUN go build -o /go/bin/gonedrive
 
 FROM gcr.io/distroless/base
-COPY --from=build /go/bin/app /
-ENTRYPOINT ["./app"]
+COPY --from=build /go/bin/gonedrive /
+ENTRYPOINT ["./gonedrive"]

@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	"net/http"
+	"path/filepath"
 
 	"io/ioutil"
 	"strings"
@@ -11,21 +12,24 @@ import (
 )
 
 //Upload will upload a string to a file
-func Upload(httpClient httpclient.HttpClient, accessToken string, remotePath string, remoteFilename string, content string) (bool, error) {
-	parentFolderItem, err := itemByPath(httpClient, accessToken, remotePath)
-	if err != nil {
-		return false, err
+func Upload(httpClient httpclient.HttpClient, accessToken string, remoteFilePath string, content string) (bool, error) {
+	uploadFileURL := fmt.Sprintf("https://graph.microsoft.com/v1.0/me/drive/root:/%s:/content", filepath.Base(remoteFilePath))
+
+	if filepath.Dir(remoteFilePath) != "." {
+		parentFolderItem, err := itemByPath(httpClient, accessToken, filepath.ToSlash(filepath.Dir(remoteFilePath)))
+		if err != nil {
+			return false, err
+		}
+		uploadFileURL = fmt.Sprintf("https://graph.microsoft.com/v1.0/me/drive/items/%s:/%s:/content", parentFolderItem.ID, filepath.Base(remoteFilePath))
 	}
 
-	uploadFileURLTemplate := "https://graph.microsoft.com/v1.0/me/drive/items/%s:/%s:/content"
-	uploadFileURL := fmt.Sprintf(uploadFileURLTemplate, parentFolderItem.ID, remoteFilename)
 	request := putRequest(uploadFileURL, accessToken, content)
 
 	response, err := httpClient.Do(request)
 	if err != nil {
 		return false, err
 	}
-	if response.StatusCode != 201 {
+	if response.StatusCode < 200 || response.StatusCode > 299 {
 		return false, fmt.Errorf("Uploading the content was not successful. It returned the status code: %v", response.StatusCode)
 	}
 	return true, nil

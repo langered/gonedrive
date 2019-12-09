@@ -26,8 +26,8 @@ var _ = Describe("File-Service", func() {
 		})
 
 		It("uploads a local file under the given path", func() {
-			prepareHttpClient("https://graph.microsoft.com/v1.0/me/drive/root:/folder1/folder1_2", respBodyParentItem, 201, nil)
-			expectPUTRequest("https://graph.microsoft.com/v1.0/me/drive/items/1234:/test.txt:/content", "successful upload", "test-content", 201, nil)
+			expectGETRequest("https://graph.microsoft.com/v1.0/me/drive/root:/folder1/folder1_2", "abc123", respBodyParentItem, 201, nil)
+			expectPUTRequest("https://graph.microsoft.com/v1.0/me/drive/items/1234:/test.txt:/content", "abc123", "successful upload", "test-content", 201, nil)
 
 			success, err := service.Upload(mockHttpClient, "abc123", "folder1/folder1_2/test.txt", "test-content")
 
@@ -36,7 +36,7 @@ var _ = Describe("File-Service", func() {
 		})
 
 		It("uploads a local file under the root level", func() {
-			expectPUTRequest("https://graph.microsoft.com/v1.0/me/drive/root:/test.txt:/content", "successful upload", "test-content", 200, nil)
+			expectPUTRequest("https://graph.microsoft.com/v1.0/me/drive/root:/test.txt:/content", "abc123", "successful upload", "test-content", 200, nil)
 
 			success, err := service.Upload(mockHttpClient, "abc123", "test.txt", "test-content")
 
@@ -50,7 +50,7 @@ var _ = Describe("File-Service", func() {
 			})
 
 			It("returns false and the error of the http-client when looking for the parent folder", func() {
-				prepareHttpClient("https://graph.microsoft.com/v1.0/me/drive/root:/folder1/folder1_2", "fail to load parent", 500, errors.New("Failed to load the given path"))
+				expectGETRequest("https://graph.microsoft.com/v1.0/me/drive/root:/folder1/folder1_2", "abc123", "fail to load parent", 500, errors.New("Failed to load the given path"))
 				success, err := service.Upload(mockHttpClient, "abc123", "folder1/folder1_2/test.txt", "test-content")
 
 				Expect(err).To(HaveOccurred())
@@ -58,8 +58,8 @@ var _ = Describe("File-Service", func() {
 			})
 
 			It("returns false and the error of the http-client when uploading the content", func() {
-				prepareHttpClient("https://graph.microsoft.com/v1.0/me/drive/root:/folder1/folder1_2", respBodyParentItem, 201, nil)
-				expectPUTRequest("https://graph.microsoft.com/v1.0/me/drive/items/1234:/test.txt:/content", "failed to upload", "test-content", 500, errors.New("Endpoint not available"))
+				expectGETRequest("https://graph.microsoft.com/v1.0/me/drive/root:/folder1/folder1_2", "abc123", respBodyParentItem, 201, nil)
+				expectPUTRequest("https://graph.microsoft.com/v1.0/me/drive/items/1234:/test.txt:/content", "abc123", "failed to upload", "test-content", 500, errors.New("Endpoint not available"))
 				success, err := service.Upload(mockHttpClient, "abc123", "folder1/folder1_2/test.txt", "test-content")
 
 				Expect(err).To(HaveOccurred())
@@ -67,8 +67,8 @@ var _ = Describe("File-Service", func() {
 			})
 
 			It("returns false and an error when uploading the content returned another status code than a successful one", func() {
-				prepareHttpClient("https://graph.microsoft.com/v1.0/me/drive/root:/folder1/folder1_2", respBodyParentItem, 201, nil)
-				expectPUTRequest("https://graph.microsoft.com/v1.0/me/drive/items/1234:/test.txt:/content", "failed to upload", "test-content", 500, nil)
+				expectGETRequest("https://graph.microsoft.com/v1.0/me/drive/root:/folder1/folder1_2", "abc123", respBodyParentItem, 201, nil)
+				expectPUTRequest("https://graph.microsoft.com/v1.0/me/drive/items/1234:/test.txt:/content", "abc123", "failed to upload", "test-content", 500, nil)
 				success, err := service.Upload(mockHttpClient, "abc123", "folder1/folder1_2/test.txt", "test-content")
 
 				Expect(err).To(HaveOccurred())

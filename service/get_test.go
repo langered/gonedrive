@@ -17,7 +17,7 @@ var _ = Describe("File-Service", func() {
 			mockCtrl = gomock.NewController(GinkgoT())
 			mockHttpClient = NewMockHttpClient(mockCtrl)
 
-			prepareHttpClient("https://graph.microsoft.com/v1.0/me/drive/root:/folder_1/folder_2/test.txt:/content", "test-content", 200, nil)
+			expectGETRequest("https://graph.microsoft.com/v1.0/me/drive/root:/folder_1/folder_2/test.txt:/content", "abc123", "test-content", 200, nil)
 		})
 
 		It("gets the file by a path and returns the content", func() {
@@ -31,7 +31,7 @@ var _ = Describe("File-Service", func() {
 			BeforeEach(func() {
 				mockHttpClient = NewMockHttpClient(mockCtrl)
 
-				prepareHttpClient("https://graph.microsoft.com/v1.0/me/drive/root:/test.txt:/content", "fail", 500, errors.New("http-error"))
+				expectGETRequest("https://graph.microsoft.com/v1.0/me/drive/root:/test.txt:/content", "abc123", "fail", 500, errors.New("http-error"))
 			})
 			It("returns the error of the http-client", func() {
 				content, err := service.Get(mockHttpClient, "abc123", "test.txt")

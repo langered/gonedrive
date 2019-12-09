@@ -37,7 +37,7 @@ var _ = Describe("File-Service", func() {
 		{ "id": "789", "name": "folder1"}
 	]
 }`
-				prepareHttpClient(listRootURL, respBodyString, 200, nil)
+				expectGETRequest(listRootURL, "abc123", respBodyString, 200, nil)
 			})
 
 			It("list items on root level", func() {
@@ -59,8 +59,8 @@ var _ = Describe("File-Service", func() {
 }`
 			)
 			BeforeEach(func() {
-				prepareHttpClient("https://graph.microsoft.com/v1.0/me/drive/root:/folder1/folder1_2", respBodyParentItem, 200, nil)
-				prepareHttpClient("https://graph.microsoft.com/v1.0/me/drive/items/1234/children", respBodyChildren, 200, nil)
+				expectGETRequest("https://graph.microsoft.com/v1.0/me/drive/root:/folder1/folder1_2", "abc123", respBodyParentItem, 200, nil)
+				expectGETRequest("https://graph.microsoft.com/v1.0/me/drive/items/1234/children", "abc123", respBodyChildren, 200, nil)
 			})
 
 			It("list items on the level of the given path", func() {
@@ -73,7 +73,7 @@ var _ = Describe("File-Service", func() {
 
 		Context("The http-client returns an error", func() {
 			It("returns empty item list and the error when getting the parent-folder", func() {
-				prepareHttpClient("https://graph.microsoft.com/v1.0/me/drive/root:/folder1/folder1_2", "error", 500, errors.New("Failed to get dir"))
+				expectGETRequest("https://graph.microsoft.com/v1.0/me/drive/root:/folder1/folder1_2", "abc123", "error", 500, errors.New("Failed to get dir"))
 
 				items, err := service.ListItems(mockHttpClient, "abc123", "folder1/folder1_2")
 
@@ -82,8 +82,8 @@ var _ = Describe("File-Service", func() {
 			})
 
 			It("returns empty item list and the error when getting the children", func() {
-				prepareHttpClient("https://graph.microsoft.com/v1.0/me/drive/root:/folder1/folder1_2", respBodyParentItem, 200, nil)
-				prepareHttpClient("https://graph.microsoft.com/v1.0/me/drive/items/1234/children", "error", 500, errors.New("Could not get childs"))
+				expectGETRequest("https://graph.microsoft.com/v1.0/me/drive/root:/folder1/folder1_2", "abc123", respBodyParentItem, 200, nil)
+				expectGETRequest("https://graph.microsoft.com/v1.0/me/drive/items/1234/children", "abc123", "error", 500, errors.New("Could not get childs"))
 
 				items, err := service.ListItems(mockHttpClient, "abc123", "folder1/folder1_2")
 
@@ -92,7 +92,7 @@ var _ = Describe("File-Service", func() {
 			})
 
 			It("returns an empty item list and the error when unmarshalling a list response", func() {
-				prepareHttpClient(listRootURL, "invalid body", 200, nil)
+				expectGETRequest(listRootURL, "abc123", "invalid body", 200, nil)
 
 				items, err := service.ListItems(mockHttpClient, "abc123", "")
 
@@ -101,7 +101,7 @@ var _ = Describe("File-Service", func() {
 			})
 
 			It("returns an empty item list and the error when unmarshalling a item response", func() {
-				prepareHttpClient("https://graph.microsoft.com/v1.0/me/drive/root:/folder1/folder1_2", "invalid url", 200, nil)
+				expectGETRequest("https://graph.microsoft.com/v1.0/me/drive/root:/folder1/folder1_2", "abc123", "invalid url", 200, nil)
 
 				items, err := service.ListItems(mockHttpClient, "abc123", "folder1/folder1_2")
 

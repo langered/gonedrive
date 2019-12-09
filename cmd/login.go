@@ -3,6 +3,9 @@ package cmd
 import (
 	"fmt"
 
+	"net/http"
+
+	gonedriveBrowser "github.com/langered/gonedrive/browser"
 	"github.com/langered/gonedrive/service"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -14,32 +17,14 @@ func NewLoginCmd() *cobra.Command {
 		Use:   "login",
 		Short: "Login to OneDrive",
 		Run: func(cmd *cobra.Command, args []string) {
-			accessToken := enterAccessToken()
-			valid := validateEnteredToken(accessToken)
-			if !valid {
+			accessToken, err := service.Login(http.DefaultClient, gonedriveBrowser.GonedriveBrowser{})
+			if err != nil {
+				fmt.Println(err)
 				return
 			}
 			writeAccessTokenToConfig(accessToken)
 		},
 	}
-}
-
-func enterAccessToken() string {
-	var input string
-	fmt.Println("Login to:\n\n\n", service.AuthURL())
-	fmt.Print("\n\nEnter the token: ")
-	fmt.Scanln(&input)
-	return input
-}
-
-func validateEnteredToken(token string) bool {
-	err := service.ValidateToken(token)
-	if err != nil {
-		fmt.Println("Invalid token")
-		fmt.Println(err)
-		return false
-	}
-	return true
 }
 
 func writeAccessTokenToConfig(accessToken string) {

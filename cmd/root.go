@@ -12,9 +12,9 @@ import (
 var (
 	cfgFile string
 	rootCmd = &cobra.Command{
-		Use:   "onedrive",
+		Use:   "gonedrive",
 		Short: "OneDrive CLI",
-		Long:  `OneDrive CLI long`,
+		Long:  `A CLI to interact with items stored in OneDrive`,
 	}
 )
 

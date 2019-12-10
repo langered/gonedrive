@@ -13,7 +13,7 @@ import (
 func NewUploadCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "upload [remote-filepath] [content as string]",
-		Short: "Upload a string to onedrive by the given path and into the given file",
+		Short: "Upload a stdin to onedrive by into the given file",
 		Args:  cobra.ExactArgs(2),
 		Run: func(cmd *cobra.Command, args []string) {
 			remoteFilePath := args[0]

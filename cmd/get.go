@@ -13,7 +13,7 @@ import (
 func NewGetCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "get [path]",
-		Short: "Get the content of a given file",
+		Short: "Get the content of a given file as stdout",
 		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			content, err := service.Get(http.DefaultClient, viper.Get("access_token").(string), args[0])

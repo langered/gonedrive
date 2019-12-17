@@ -10,8 +10,9 @@ import (
 )
 
 var (
-	cfgFile string
-	rootCmd = &cobra.Command{
+	cfgFile    string
+	encryption bool
+	rootCmd    = &cobra.Command{
 		Use:   "gonedrive",
 		Short: "OneDrive CLI",
 		Long:  `A CLI to interact with items stored in OneDrive`,
@@ -53,8 +54,8 @@ func initConfig() {
 
 	viper.AutomaticEnv()
 
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+	if err := viper.ReadInConfig(); err != nil {
+		fmt.Println(err)
 	}
 }
 

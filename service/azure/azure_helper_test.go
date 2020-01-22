@@ -1,4 +1,4 @@
-package service_test
+package azure_test
 
 import (
 	"bytes"
@@ -11,9 +11,11 @@ import (
 
 	"github.com/golang/mock/gomock"
 	. "github.com/langered/gonedrive/fakes/mock_httpclient"
+	"github.com/langered/gonedrive/service/azure"
 )
 
 var (
+	client         azure.AzureClient
 	mockCtrl       *gomock.Controller
 	mockHttpClient *MockHttpClient
 )

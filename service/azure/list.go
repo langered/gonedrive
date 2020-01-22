@@ -1,4 +1,4 @@
-package service
+package azure
 
 import (
 	"encoding/json"
@@ -18,12 +18,12 @@ type item struct {
 	ID   string `json:"id"`
 }
 
-//ListItems returns the folders and files in a given path as []string
-func ListItems(httpClient httpclient.HttpClient, accessToken string, path string) ([]string, error) {
+//List returns the folders and files in a given path as []string
+func (client AzureClient) List(httpClient httpclient.HttpClient, accessToken string, remotePath string) ([]string, error) {
 	childrenURL := "https://graph.microsoft.com/v1.0/me/drive/root/children"
 
-	if path != "" {
-		parentFolderItem, err := itemByPath(httpClient, accessToken, path)
+	if remotePath != "" {
+		parentFolderItem, err := itemByPath(httpClient, accessToken, remotePath)
 		if err != nil {
 			return []string{}, err
 		}

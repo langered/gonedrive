@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	gonedriveBrowser "github.com/langered/gonedrive/browser"
-	"github.com/langered/gonedrive/service"
+	"github.com/langered/gonedrive/service/azure"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -17,7 +17,8 @@ func NewLoginCmd() *cobra.Command {
 		Use:   "login",
 		Short: "Login to OneDrive",
 		Run: func(cmd *cobra.Command, args []string) {
-			accessToken, err := service.Login(http.DefaultClient, gonedriveBrowser.GonedriveBrowser{})
+			client := azure.AzureClient{}
+			accessToken, err := client.Login(http.DefaultClient, gonedriveBrowser.GonedriveBrowser{})
 			if err != nil {
 				fmt.Println(err)
 				return

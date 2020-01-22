@@ -3,13 +3,11 @@ package cmd
 import (
 	"fmt"
 	"net/http"
-	"syscall"
 
 	"github.com/langered/gonedrive/crypto"
-	"github.com/langered/gonedrive/service"
+	"github.com/langered/gonedrive/service/azure"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"golang.org/x/crypto/ssh/terminal"
 )
 
 //NewUploadCmd returns the upload cobra command
@@ -21,6 +19,7 @@ func NewUploadCmd() *cobra.Command {
 		Short: "Upload a stdin to onedrive by into the given file",
 		Args:  cobra.ExactArgs(2),
 		Run: func(cmd *cobra.Command, args []string) {
+			client := azure.AzureClient{}
 			remoteFilePath := args[0]
 			content := args[1]
 
@@ -33,7 +32,7 @@ func NewUploadCmd() *cobra.Command {
 				}
 			}
 
-			success, err := service.Upload(http.DefaultClient, viper.Get("access_token").(string), remoteFilePath, content)
+			success, err := client.Upload(http.DefaultClient, viper.Get("access_token").(string), remoteFilePath, content)
 			if err != nil {
 				fmt.Println(err)
 				return
@@ -52,9 +51,8 @@ func NewUploadCmd() *cobra.Command {
 }
 
 func encryptContent(content string) (string, error) {
-	fmt.Println("Content will be encrypted before uploading. Please enter your password:")
-	bytePassword, _ := terminal.ReadPassword(int(syscall.Stdin))
-	password := string(bytePassword)
+	fmt.Println("Content will be encrypted before uploading")
+	password := promptForPassword()
 	uploadContent, err := crypto.Encrypt(content, password)
 	if err != nil {
 		return "", err

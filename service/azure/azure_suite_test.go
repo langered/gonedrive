@@ -1,4 +1,4 @@
-package service_test
+package azure_test
 
 import (
 	"testing"
@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-func TestService(t *testing.T) {
+func TestAzure(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Service Suite")
+	RunSpecs(t, "Azure Suite")
 }

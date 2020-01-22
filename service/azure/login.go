@@ -1,4 +1,4 @@
-package service
+package azure
 
 import (
 	"bytes"
@@ -35,7 +35,7 @@ type authtokenResponse struct {
 }
 
 //Login will open the login page for microsoft and parse the access token
-func Login(httpClient httpclient.HttpClient, browser browser.Browser) (string, error) {
+func (client AzureClient) Login(httpClient httpclient.HttpClient, browser browser.Browser) (string, error) {
 	authCode(browser)
 	if authCodeValue == "" {
 		return "", errors.New("No auth code received")

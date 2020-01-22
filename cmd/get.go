@@ -3,13 +3,11 @@ package cmd
 import (
 	"fmt"
 	"net/http"
-	"syscall"
 
 	"github.com/langered/gonedrive/crypto"
-	"github.com/langered/gonedrive/service"
+	"github.com/langered/gonedrive/service/azure"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"golang.org/x/crypto/ssh/terminal"
 )
 
 //NewGetCmd returns the get cobra command
@@ -21,7 +19,8 @@ func NewGetCmd() *cobra.Command {
 		Short: "Get the content of a given file as stdout",
 		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
-			content, err := service.Get(http.DefaultClient, viper.Get("access_token").(string), args[0])
+			client := azure.AzureClient{}
+			content, err := client.Get(http.DefaultClient, viper.Get("access_token").(string), args[0])
 
 			if encryption {
 				content, err = decryptContent(content)
@@ -44,9 +43,8 @@ func NewGetCmd() *cobra.Command {
 }
 
 func decryptContent(content string) (string, error) {
-	fmt.Println("Content is encrypted. Enter the password to decrypt it:")
-	bytePassword, _ := terminal.ReadPassword(int(syscall.Stdin))
-	password := string(bytePassword)
+	fmt.Println("Content is encrypted.")
+	password := promptForPassword()
 	uploadContent, err := crypto.Decrypt(content, password)
 	if err != nil {
 		return "", err

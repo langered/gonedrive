@@ -1,11 +1,11 @@
-package service_test
+package azure_test
 
 import (
 	"errors"
 
 	"github.com/golang/mock/gomock"
 	. "github.com/langered/gonedrive/fakes/mock_httpclient"
-	"github.com/langered/gonedrive/service"
+	"github.com/langered/gonedrive/service/azure"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -18,6 +18,7 @@ var _ = Describe("File-Service", func() {
 	BeforeEach(func() {
 		mockCtrl = gomock.NewController(GinkgoT())
 		mockHttpClient = NewMockHttpClient(mockCtrl)
+		client = azure.AzureClient{}
 		listRootURL = "https://graph.microsoft.com/v1.0/me/drive/root/children"
 	})
 
@@ -41,7 +42,7 @@ var _ = Describe("File-Service", func() {
 			})
 
 			It("list items on root level", func() {
-				items, err := service.ListItems(mockHttpClient, "abc123", "")
+				items, err := client.List(mockHttpClient, "abc123", "")
 
 				Expect(err).NotTo(HaveOccurred())
 				Expect(items).To(ConsistOf("file1.txt", "file2.yml", "folder1"))
@@ -64,7 +65,7 @@ var _ = Describe("File-Service", func() {
 			})
 
 			It("list items on the level of the given path", func() {
-				items, err := service.ListItems(mockHttpClient, "abc123", "folder1/folder1_2")
+				items, err := client.List(mockHttpClient, "abc123", "folder1/folder1_2")
 
 				Expect(err).NotTo(HaveOccurred())
 				Expect(items).To(ConsistOf("file_in_dir1.txt", "file_in_dir2.yml", "folder_in_dir1"))
@@ -75,7 +76,7 @@ var _ = Describe("File-Service", func() {
 			It("returns empty item list and the error when getting the parent-folder", func() {
 				expectGETRequest("https://graph.microsoft.com/v1.0/me/drive/root:/folder1/folder1_2", "abc123", "error", 500, errors.New("Failed to get dir"))
 
-				items, err := service.ListItems(mockHttpClient, "abc123", "folder1/folder1_2")
+				items, err := client.List(mockHttpClient, "abc123", "folder1/folder1_2")
 
 				Expect(err).To(HaveOccurred())
 				Expect(items).To(Equal([]string{}))
@@ -85,7 +86,7 @@ var _ = Describe("File-Service", func() {
 				expectGETRequest("https://graph.microsoft.com/v1.0/me/drive/root:/folder1/folder1_2", "abc123", respBodyParentItem, 200, nil)
 				expectGETRequest("https://graph.microsoft.com/v1.0/me/drive/items/1234/children", "abc123", "error", 500, errors.New("Could not get childs"))
 
-				items, err := service.ListItems(mockHttpClient, "abc123", "folder1/folder1_2")
+				items, err := client.List(mockHttpClient, "abc123", "folder1/folder1_2")
 
 				Expect(err).To(HaveOccurred())
 				Expect(items).To(Equal([]string{}))
@@ -94,7 +95,7 @@ var _ = Describe("File-Service", func() {
 			It("returns an empty item list and the error when unmarshalling a list response", func() {
 				expectGETRequest(listRootURL, "abc123", "invalid body", 200, nil)
 
-				items, err := service.ListItems(mockHttpClient, "abc123", "")
+				items, err := client.List(mockHttpClient, "abc123", "")
 
 				Expect(err).To(HaveOccurred())
 				Expect(items).To(Equal([]string{}))
@@ -103,7 +104,7 @@ var _ = Describe("File-Service", func() {
 			It("returns an empty item list and the error when unmarshalling a item response", func() {
 				expectGETRequest("https://graph.microsoft.com/v1.0/me/drive/root:/folder1/folder1_2", "abc123", "invalid url", 200, nil)
 
-				items, err := service.ListItems(mockHttpClient, "abc123", "folder1/folder1_2")
+				items, err := client.List(mockHttpClient, "abc123", "folder1/folder1_2")
 
 				Expect(err).To(HaveOccurred())
 				Expect(items).To(Equal([]string{}))

@@ -1,4 +1,4 @@
-package service_test
+package azure_test
 
 import (
 	"errors"
@@ -8,7 +8,7 @@ import (
 	"github.com/golang/mock/gomock"
 	. "github.com/langered/gonedrive/fakes/mock_browser"
 	. "github.com/langered/gonedrive/fakes/mock_httpclient"
-	"github.com/langered/gonedrive/service"
+	"github.com/langered/gonedrive/service/azure"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -32,6 +32,7 @@ var _ = Describe("Login-Service", func() {
 			mockCtrl = gomock.NewController(GinkgoT())
 			mockHttpClient = NewMockHttpClient(mockCtrl)
 			mockBrowser = NewMockBrowser(mockCtrl)
+			client = azure.AzureClient{}
 
 			expectedPayload = url.Values{}
 			expectedPayload.Set("client_id", "94126bd2-3582-4928-adb7-bf307c7d5135")
@@ -50,7 +51,7 @@ var _ = Describe("Login-Service", func() {
 
 			expectPOSTRequest(tokenURL, expectedPayload, expectedBody, 200, nil)
 
-			authenticationToken, err := service.Login(mockHttpClient, mockBrowser)
+			authenticationToken, err := client.Login(mockHttpClient, mockBrowser)
 
 			Expect(err).NotTo(HaveOccurred())
 			Expect(authenticationToken).To(Equal("token123"))
@@ -61,7 +62,7 @@ var _ = Describe("Login-Service", func() {
 				expectOpenAuthURL(authURL, localhostAuthcodeURL, nil)
 				expectPOSTRequest(tokenURL, expectedPayload, "fail", 500, errors.New("Failed to sent post request"))
 
-				authenticationToken, err := service.Login(mockHttpClient, mockBrowser)
+				authenticationToken, err := client.Login(mockHttpClient, mockBrowser)
 
 				Expect(err).To(HaveOccurred())
 				Expect(authenticationToken).To(Equal(""))
@@ -71,7 +72,7 @@ var _ = Describe("Login-Service", func() {
 				expectOpenAuthURL(authURL, localhostAuthcodeURL, nil)
 				expectPOSTRequest(tokenURL, expectedPayload, "no valid body", 200, nil)
 
-				authenticationToken, err := service.Login(mockHttpClient, mockBrowser)
+				authenticationToken, err := client.Login(mockHttpClient, mockBrowser)
 
 				Expect(err).To(HaveOccurred())
 				Expect(authenticationToken).To(Equal(""))
@@ -80,7 +81,7 @@ var _ = Describe("Login-Service", func() {
 			It("returns an empty string and the error when the redirect_uri does not get a auth code", func() {
 				expectOpenAuthURL(authURL, "http://localhost:8261/authcode?fail=reason", nil)
 
-				authenticationToken, err := service.Login(mockHttpClient, mockBrowser)
+				authenticationToken, err := client.Login(mockHttpClient, mockBrowser)
 
 				Expect(err).To(HaveOccurred())
 				Expect(authenticationToken).To(Equal(""))

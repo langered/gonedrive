@@ -1,8 +1,9 @@
-package service
+package azure
 
 import (
 	"fmt"
 	"io/ioutil"
+	"strconv"
 
 	"github.com/langered/gonedrive/httpclient"
 )
@@ -12,13 +13,16 @@ var (
 )
 
 //Get returns the content of a file given by a path
-func Get(httpClient httpclient.HttpClient, accessToken string, remotePath string) (string, error) {
+func (client AzureClient) Get(httpClient httpclient.HttpClient, accessToken string, remotePath string) (string, error) {
 	url := fmt.Sprintf(contentOfFileURL, remotePath)
 	request := getRequest(url, accessToken)
 
 	response, err := httpClient.Do(request)
 	if err != nil {
-		return "", err
+		return strconv.Itoa(response.StatusCode), err
+	}
+	if response.StatusCode < 200 || response.StatusCode > 299 {
+		return strconv.Itoa(response.StatusCode), fmt.Errorf("Getting the file failed. It returned the status code: %v", response.StatusCode)
 	}
 
 	defer response.Body.Close()

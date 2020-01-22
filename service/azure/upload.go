@@ -1,4 +1,4 @@
-package service
+package azure
 
 import (
 	"fmt"
@@ -12,7 +12,7 @@ import (
 )
 
 //Upload will upload a string to a file
-func Upload(httpClient httpclient.HttpClient, accessToken string, remoteFilePath string, content string) (bool, error) {
+func (client AzureClient) Upload(httpClient httpclient.HttpClient, accessToken string, remoteFilePath string, content string) (bool, error) {
 	uploadFileURL := fmt.Sprintf("https://graph.microsoft.com/v1.0/me/drive/root:/%s:/content", filepath.Base(remoteFilePath))
 
 	if filepath.Dir(remoteFilePath) != "." {

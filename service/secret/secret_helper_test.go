@@ -13,6 +13,19 @@ import (
 var (
 	mockCtrl        *gomock.Controller
 	mockStoreClient *MockStoreClient
+
+	existingSecrets = `
+---
+secrets:
+- name: first-secret
+  value: "totally-unknown"
+- name: top
+  value: "fake-secret123"
+- name: user@secret.com
+  value: "U-Cannot-hack-Me"
+`
+
+	existingSecretContent, _ = crypto.Encrypt(existingSecrets, "correct-password")
 )
 
 func expectCorrectSecretUpload(newSecrets string, decryptPassword string, accessToken string, secretFilePath string) {

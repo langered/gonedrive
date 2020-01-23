@@ -22,6 +22,7 @@ func NewSecretCmd() *cobra.Command {
 	}
 	secretCMD.AddCommand(newInitSubCmd())
 	secretCMD.AddCommand(newPushSubCmd())
+	secretCMD.AddCommand(newGetSubCmd())
 	return secretCMD
 }
 
@@ -51,6 +52,28 @@ func newPushSubCmd() *cobra.Command {
 	pushCMD.Flags().StringVarP(&credenitalValue, "value", "v", "", "value of the credential")
 	pushCMD.MarkFlagRequired("value")
 	return pushCMD
+}
+
+func newGetSubCmd() *cobra.Command {
+	return &cobra.Command{
+		Use:   "get [secret-name]",
+		Short: "Get a secret by a given name",
+		Args:  cobra.ExactArgs(1),
+		Run: func(cmd *cobra.Command, args []string) {
+			if !viper.IsSet("secret_path") {
+				fmt.Println("Please execute 'secret init' first")
+				return
+			}
+			password := promptForPassword()
+			client := azure.AzureClient{}
+			secret, err := secret.Get(client, viper.Get("access_token").(string), password, args[0], viper.Get("secret_path").(string))
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			fmt.Println(secret)
+		},
+	}
 }
 
 func newInitSubCmd() *cobra.Command {

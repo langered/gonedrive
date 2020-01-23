@@ -15,21 +15,6 @@ import (
 var _ = Describe("Secret Push Service", func() {
 	Context("#Push", func() {
 
-		var (
-			existingSecrets = `
----
-secrets:
-- name: first-secret
-  value: "totally-unknown"
-- name: top
-  value: "fake-secret123"
-- name: user@secret.com
-  value: "U-Cannot-hack-Me"
-`
-
-			existingSecretContent, _ = crypto.Encrypt(existingSecrets, "correct-password")
-		)
-
 		BeforeEach(func() {
 			mockCtrl = gomock.NewController(GinkgoT())
 			mockStoreClient = NewMockStoreClient(mockCtrl)

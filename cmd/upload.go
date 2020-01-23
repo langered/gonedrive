@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/langered/gonedrive/crypto"
 	"github.com/langered/gonedrive/service/azure"
+	"github.com/langered/gonedrive/service/crypto"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )

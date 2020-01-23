@@ -3,8 +3,8 @@ package secret
 import (
 	"net/http"
 
-	"github.com/langered/gonedrive/crypto"
 	"github.com/langered/gonedrive/service"
+	"github.com/langered/gonedrive/service/crypto"
 	"gopkg.in/yaml.v2"
 )
 

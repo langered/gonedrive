@@ -1,7 +1,7 @@
 package crypto_test
 
 import (
-	"github.com/langered/gonedrive/crypto"
+	"github.com/langered/gonedrive/service/crypto"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )

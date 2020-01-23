@@ -16,7 +16,7 @@ docker-build:
 
 .PHONY: test
 test:
-	go test -v -race -covermode atomic -coverprofile=profile.cov ./service/azure ./service/secret ./crypto
+	go test -v -race -covermode atomic -coverprofile=profile.cov ./service/azure ./service/secret ./service/crypto
 	go tool cover -func=profile.cov
 
 .PHONY: vet

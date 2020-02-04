@@ -28,6 +28,7 @@ func init() {
 		NewLoginCmd(),
 		NewListCmd(),
 		NewGetCmd(),
+		NewDeleteCmd(),
 		NewUploadCmd(),
 		NewSecretCmd(),
 	)

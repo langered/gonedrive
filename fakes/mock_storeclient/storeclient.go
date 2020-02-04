@@ -93,3 +93,17 @@ func (mr *MockStoreClientMockRecorder) List(httpClient, accessToken, remotePath 
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockStoreClient)(nil).List), httpClient, accessToken, remotePath)
 }
+
+// Delete mocks base method
+func (m *MockStoreClient) Delete(httpClient httpclient.HttpClient, accessToken, remotePath string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Delete", httpClient, accessToken, remotePath)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Delete indicates an expected call of Delete
+func (mr *MockStoreClientMockRecorder) Delete(httpClient, accessToken, remotePath interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockStoreClient)(nil).Delete), httpClient, accessToken, remotePath)
+}

@@ -65,6 +65,22 @@ func expectPOSTRequest(expectedURL string, expectedPayload url.Values, expectedB
 		}, expectedError)
 }
 
+func expectDELETERequest(expectedURL string, expectedAccessToken string, respBodyString string, statusCode int, err error) {
+	respBody := ioutil.NopCloser(strings.NewReader(respBodyString))
+
+	req, _ := http.NewRequest("DELETE", expectedURL, nil)
+	bearerToken := fmt.Sprintf("Bearer %s", expectedAccessToken)
+	req.Header.Add("Authorization", bearerToken)
+
+	mockHttpClient.
+		EXPECT().
+		Do(req).
+		Return(&http.Response{
+			StatusCode: statusCode,
+			Body:       respBody,
+		}, err)
+}
+
 type wantRequest struct{ request *http.Request }
 
 func MatchesRequest(request *http.Request) gomock.Matcher {

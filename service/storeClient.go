@@ -11,4 +11,5 @@ type StoreClient interface {
 	Upload(httpClient httpclient.HttpClient, accessToken string, remoteFilePath string, content string) (bool, error)
 	Login(httpClient httpclient.HttpClient, browser browser.Browser) (string, error)
 	List(httpClient httpclient.HttpClient, accessToken string, remotePath string) ([]string, error)
+	Delete(httpClient httpclient.HttpClient, accessToken string, remotePath string) error
 }

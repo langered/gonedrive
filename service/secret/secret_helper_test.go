@@ -26,6 +26,14 @@ secrets:
 `
 
 	existingSecretContent, _ = crypto.Encrypt(existingSecrets, "correct-password")
+
+	wrongSecretFileContent = `
+---
+secrets:
+- name: identation
+	value: "is wrong"
+`
+	wrongSecretContent, _ = crypto.Encrypt(wrongSecretFileContent, "correct-password")
 )
 
 func expectCorrectSecretUpload(newSecrets string, decryptPassword string, accessToken string, secretFilePath string) {

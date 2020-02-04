@@ -6,7 +6,7 @@
 # Gonedrive
 A CLI to use OneDrive in the terminal.
 
-#Installation
+# Installation
 ## From source
 Build Gonedrive from the source files:
 

@@ -5,7 +5,6 @@ import (
 
 	"github.com/golang/mock/gomock"
 	. "github.com/langered/gonedrive/fakes/mock_storeclient"
-	"github.com/langered/gonedrive/service/crypto"
 	"github.com/langered/gonedrive/service/secret"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -44,16 +43,6 @@ var _ = Describe("Secret Push Service", func() {
 			})
 
 			It("returns the error when the password file is corrupt", func() {
-				var (
-					wrongSecretFileContent = `
----
-secrets:
-- name: identation
-	value: "is wrong"
-`
-					wrongSecretContent, _ = crypto.Encrypt(wrongSecretFileContent, "correct-password")
-				)
-
 				expectClientGET(wrongSecretContent, nil, "fake-token", "test.gdsecret")
 
 				returnedSecret, err := secret.Get(mockStoreClient, "fake-token", "correct-password", "top", "test.gdsecret")

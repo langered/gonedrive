@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"path/filepath"
 
@@ -23,6 +24,7 @@ func NewSecretCmd() *cobra.Command {
 	secretCMD.AddCommand(newInitSubCmd())
 	secretCMD.AddCommand(newPushSubCmd())
 	secretCMD.AddCommand(newGetSubCmd())
+	secretCMD.AddCommand(newListSubCmd())
 	return secretCMD
 }
 
@@ -34,13 +36,14 @@ func newPushSubCmd() *cobra.Command {
 		Use:   "push",
 		Short: "Push a secret",
 		Run: func(cmd *cobra.Command, args []string) {
-			if !viper.IsSet("secret_path") {
-				fmt.Println("Please execute 'secret init' first")
+			secretPath, password, err := secretConfigs()
+			if err != nil {
+				fmt.Println(err)
 				return
 			}
-			password := promptForPassword()
 			client := azure.AzureClient{}
-			err := secret.Push(client, viper.Get("access_token").(string), password, credenitalName, credenitalValue, viper.Get("secret_path").(string))
+
+			err = secret.Push(client, viper.Get("access_token").(string), password, credenitalName, credenitalValue, secretPath)
 			if err != nil {
 				fmt.Println(err)
 				return
@@ -60,18 +63,42 @@ func newGetSubCmd() *cobra.Command {
 		Short: "Get a secret by a given name",
 		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
-			if !viper.IsSet("secret_path") {
-				fmt.Println("Please execute 'secret init' first")
+			secretPath, password, err := secretConfigs()
+			if err != nil {
+				fmt.Println(err)
 				return
 			}
-			password := promptForPassword()
 			client := azure.AzureClient{}
-			secret, err := secret.Get(client, viper.Get("access_token").(string), password, args[0], viper.Get("secret_path").(string))
+
+			secret, err := secret.Get(client, viper.Get("access_token").(string), password, args[0], secretPath)
 			if err != nil {
 				fmt.Println(err)
 				return
 			}
 			fmt.Println(secret)
+		},
+	}
+}
+
+func newListSubCmd() *cobra.Command {
+	return &cobra.Command{
+		Use:   "list",
+		Short: "List all names of the secrets",
+		Args:  cobra.ExactArgs(0),
+		Run: func(cmd *cobra.Command, args []string) {
+			secretPath, password, err := secretConfigs()
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			client := azure.AzureClient{}
+
+			secretList, err := secret.List(client, viper.Get("access_token").(string), password, secretPath)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			fmt.Println(secretList)
 		},
 	}
 }
@@ -95,4 +122,14 @@ func newInitSubCmd() *cobra.Command {
 			}
 		},
 	}
+}
+
+func secretConfigs() (string, string, error) {
+	if !viper.IsSet("secret_path") {
+		return "", "", errors.New("Please execute 'secret init' first")
+	}
+	secretPath := viper.Get("secret_path").(string)
+	password := promptForPassword()
+
+	return secretPath, password, nil
 }

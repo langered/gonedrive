@@ -27,5 +27,9 @@ vet:
 goreport:
 	goreportcard-cli -v
 
+.PHONY: doc
+doc:
+	go run doc/doc_generator.go
+
 .PHONY: all
 all: install vet goreport build test

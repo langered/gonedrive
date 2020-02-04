@@ -19,6 +19,11 @@ var (
 	}
 )
 
+//NewRootCmd returns the root command
+func NewRootCmd() *cobra.Command {
+	return rootCmd
+}
+
 func init() {
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.gonedrive.yaml)")

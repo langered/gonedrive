@@ -25,6 +25,7 @@ func NewSecretCmd() *cobra.Command {
 	secretCMD.AddCommand(newPushSubCmd())
 	secretCMD.AddCommand(newGetSubCmd())
 	secretCMD.AddCommand(newListSubCmd())
+	secretCMD.AddCommand(newDeleteSubCmd())
 	return secretCMD
 }
 
@@ -48,6 +49,7 @@ func newPushSubCmd() *cobra.Command {
 				fmt.Println(err)
 				return
 			}
+			fmt.Println("Pushed credential.")
 		},
 	}
 	pushCMD.Flags().StringVarP(&credenitalName, "name", "n", "", "name of the credential")
@@ -76,6 +78,29 @@ func newGetSubCmd() *cobra.Command {
 				return
 			}
 			fmt.Println(secret)
+		},
+	}
+}
+
+func newDeleteSubCmd() *cobra.Command {
+	return &cobra.Command{
+		Use:   "delete [secret-name]",
+		Short: "Delete a secret by a given name",
+		Args:  cobra.ExactArgs(1),
+		Run: func(cmd *cobra.Command, args []string) {
+			secretPath, password, err := secretConfigs()
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			client := azure.AzureClient{}
+
+			err = secret.Delete(client, viper.Get("access_token").(string), password, args[0], secretPath)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			fmt.Println("Deleted credential.")
 		},
 	}
 }

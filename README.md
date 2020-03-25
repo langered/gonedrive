@@ -7,6 +7,9 @@
 A CLI to use OneDrive in the terminal.
 
 # Installation
+
+You can use the binary in the release or build a new binary from source.
+
 ## From source
 Build Gonedrive from the source files:
 
@@ -26,70 +29,8 @@ This will redirect you to the login page of Microsoft. After a successful login,
 The default location for the config file is in your homedirectory `~/.gonedrive.yml`
 The received token is valid for 1 hour.
 
-`gonedrive --help` list all currently available commands.
-
-```
-A CLI to interact with items stored in OneDrive
-
-Usage:
-  gonedrive [command]
-
-Available Commands:
-  get         Get the content of a given file as stdout
-  help        Help about any command
-  list        List items under given path
-  login       Login to OneDrive
-  upload      Upload a stdin to onedrive by into the given file
-  version     Shows current used version
-
-Flags:
-      --config string   config file (default is $HOME/.gonedrive.yaml)
-  -h, --help            help for gonedrive
-
-Use "gonedrive [command] --help" for more information about a command.
-```
-
-## Commands
-In the following, short examples are provided for each command.
-
-### Get
-Get the content of a file as stdout.
-
-Example:
-
-`gonedrive get Dir1/Dir2/MyFile.txt`
-
-### Upload
-
-Upload the stdin to a file in OneDrive. This will create or overwrite the given file. The directory 
-
-`gonedrive upload Dir1/Dir2/MyFile.txt "My content"`
-
-You can also upload content of a file like this:
-
-`gonedrive upload Dir1/Dir2/MyFile.txt "$(cat <path-to-file>)"`
-
-Please keep in mind that only small files up to 4 MB can get uploaded until now.
-
-### List
-Lists the files and directory under a given path. If no path is given, it will list the items under root.
-
-```
-gonedrive list Dir1/Dir2
-[MyFile.txt SecondFile.yml Another-Dir]
-```
-
-## TODO
-
-There is a lot to come to Gonedrive.
-
-* Upload files directly instead of using the stdin
-* Support large file uploads
-* Get a file and store it directly into a file
-* Delete remote files
-
-I am also open for any feature requests, ideas and improvements.
-
+## Documentation
+Each command is documented in the [doc folder](https://github.com/langered/gonedrive/tree/master/doc)
 
 ## Using Docker
 

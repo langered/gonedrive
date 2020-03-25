@@ -1,24 +1,17 @@
 package secret
 
 import (
-	"net/http"
-
 	"github.com/langered/gonedrive/service"
-	"github.com/langered/gonedrive/service/crypto"
 	"gopkg.in/yaml.v2"
 )
 
 //List returns a list of secret names
 func List(storeClient service.StoreClient, accessToken string, password string, credFilePath string) ([]string, error) {
-	encryptedSecrets, err := storeClient.Get(http.DefaultClient, accessToken, credFilePath)
+	decryptedContent, err := getDecryptedRemoteFileContent(storeClient, accessToken, password, credFilePath)
 	if err != nil {
 		return []string{}, err
 	}
-	decryptedSecrets, err := crypto.Decrypt(encryptedSecrets, password)
-	if err != nil {
-		return []string{}, err
-	}
-	return secretNames(decryptedSecrets)
+	return secretNames(decryptedContent)
 }
 
 func secretNames(secrets string) ([]string, error) {

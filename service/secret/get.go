@@ -2,24 +2,18 @@ package secret
 
 import (
 	"fmt"
-	"net/http"
 
 	"github.com/langered/gonedrive/service"
-	"github.com/langered/gonedrive/service/crypto"
 	"gopkg.in/yaml.v2"
 )
 
 //Get returns the value of a given credential name in a given credential file
 func Get(storeClient service.StoreClient, accessToken string, password string, secretName string, credFilePath string) (string, error) {
-	encryptedSecrets, err := storeClient.Get(http.DefaultClient, accessToken, credFilePath)
+	decryptedContent, err := getDecryptedRemoteFileContent(storeClient, accessToken, password, credFilePath)
 	if err != nil {
 		return "", err
 	}
-	decryptedSecrets, err := crypto.Decrypt(encryptedSecrets, password)
-	if err != nil {
-		return "", err
-	}
-	secret, err := getSecret(decryptedSecrets, secretName)
+	secret, err := getSecret(decryptedContent, secretName)
 	if err != nil {
 		return "", err
 	}

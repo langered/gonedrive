@@ -10,17 +10,13 @@ import (
 
 //Push uploads a new credential to a .gdsecret file or returns an occurring error
 func Push(storeClient service.StoreClient, accessToken string, password string, secretName string, secretValue string, credFilePath string) error {
-	secretContent, err := storeClient.Get(http.DefaultClient, accessToken, credFilePath)
+	decryptedContent, err := getDecryptedRemoteFileContent(storeClient, accessToken, password, credFilePath)
 	if err != nil {
-		if secretContent == "404" {
-			secretContent, _ = crypto.Encrypt("", password)
-		} else {
+		if decryptedContent != "404" {
 			return err
+		} else {
+			decryptedContent = ""
 		}
-	}
-	decryptedContent, err := crypto.Decrypt(secretContent, password)
-	if err != nil {
-		return err
 	}
 	newSecretContent, err := addSecret(decryptedContent, secretName, secretValue)
 	if err != nil {

@@ -11,11 +11,7 @@ import (
 
 //Delete deletes a credential in the .gdsecret file
 func Delete(storeClient service.StoreClient, accessToken string, password string, secretName string, credFilePath string) error {
-	secretContent, err := storeClient.Get(http.DefaultClient, accessToken, credFilePath)
-	if err != nil {
-		return err
-	}
-	decryptedContent, err := crypto.Decrypt(secretContent, password)
+	decryptedContent, err := getDecryptedRemoteFileContent(storeClient, accessToken, password, credFilePath)
 	if err != nil {
 		return err
 	}

@@ -2,13 +2,14 @@ package secret_test
 
 import (
 	"errors"
+	"net/http"
+
 	"github.com/golang/mock/gomock"
 	. "github.com/langered/gonedrive/fakes/mock_storeclient"
 	"github.com/langered/gonedrive/service/crypto"
 	"github.com/langered/gonedrive/service/secret"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"net/http"
 )
 
 var _ = Describe("Secret Push Service", func() {

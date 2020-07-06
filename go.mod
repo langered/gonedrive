@@ -5,7 +5,7 @@ go 1.12
 require (
 	github.com/golang/mock v1.4.3
 	github.com/mitchellh/go-homedir v1.1.0
-	github.com/onsi/ginkgo v1.13.0
+	github.com/onsi/ginkgo v1.14.0
 	github.com/onsi/gomega v1.10.1
 	github.com/pkg/browser v0.0.0-20180916011732-0a3d74bf9ce4
 	github.com/spf13/cobra v0.0.7

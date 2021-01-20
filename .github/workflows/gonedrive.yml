@@ -31,28 +31,3 @@ jobs:
 
     - name: Run unit tests
       run: make test
-
-  update-doc:
-    needs: test
-    name: Update the documentation when new commands are implemented
-    runs-on: ubuntu-latest
-    steps:
-    - name: Set up Go 1.13
-      uses: actions/setup-go@v1
-      with:
-        go-version: 1.13
-
-    - uses: actions/checkout@v2
-
-    - name: Update documentation with doc/doc_generator.go
-      run: make doc
-
-    - uses: EndBug/add-and-commit@v2
-      with:
-        author_name: Doc Bot
-        author_email: docbot@gonedrive.com
-        message: "Update command documentation"
-        pattern: "*.md"
-        path: "./doc"
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
